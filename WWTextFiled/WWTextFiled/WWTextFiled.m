@@ -92,6 +92,11 @@
                 self.textLabel.transform =  CGAffineTransformMakeTranslation(-(frame.size.width + 13 - self.frame.size.width), 0);
                 self.zhiZhenView.transform = CGAffineTransformMakeTranslation(-(frame.size.width + 13 - self.frame.size.width), 0);
             }];
+        }else{
+            [UIView animateWithDuration:0.8 animations:^{
+                self.textLabel.transform = CGAffineTransformIdentity;
+                self.zhiZhenView.transform = CGAffineTransformIdentity;
+            }];
         }
     }
 }
@@ -123,9 +128,17 @@
 -(WWCalVuew *)keyBoard{
     if (!_keyBoard) {
         _keyBoard = [[WWCalVuew alloc]initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height/2)];
-            [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(noti:) name:@"love" object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(noti:) name:@"love" object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(souDong) name:@"douDong" object:nil];
     }
     return _keyBoard;
+}
+-(void)souDong{
+    CAKeyframeAnimation *shake=[CAKeyframeAnimation animationWithKeyPath:@"position.x"];
+    shake.values=@[@0,@-10,@10,@-10,@0];
+    shake.additive=YES;
+    shake.duration=0.25;
+    [self.textLabel.layer addAnimation:shake forKey:@"shake"];
 }
 -(void)noti:(NSNotification *)noti{
     NSDictionary *dicc = noti.userInfo;

@@ -26,7 +26,7 @@
 - (IBAction)tag:(UILongPressGestureRecognizer *)sender {
     [self.dataArray removeAllObjects];
     self.aaa = 0.00;
-     [self change];
+    [self change];
 }
 -(instancetype)initWithCoder:(NSCoder *)aDecoder{
     if (self = [super initWithCoder:aDecoder]) {
@@ -76,11 +76,43 @@
                         [self.dataArray replaceObjectAtIndex:conut withObject:str];
                     }else{
                         str = [NSString stringWithFormat:@"%@0",str];
-                        [self.dataArray replaceObjectAtIndex:conut withObject:str];
+                        if ([str doubleValue] >= 999999999999.9999) {
+                            [[NSNotificationCenter defaultCenter]postNotificationName:@"douDong" object:nil];
+                        }else{
+                            if ([str containsString:@"."]) {
+                                if ([[str componentsSeparatedByString:@"."] lastObject].length > 4) {
+                                    [[NSNotificationCenter defaultCenter]postNotificationName:@"douDong" object:nil];
+                                }else{
+                                    if ([str doubleValue] > 999999999999.9999) {
+                                        [[NSNotificationCenter defaultCenter]postNotificationName:@"douDong" object:nil];
+                                    }else{
+                                        [self.dataArray replaceObjectAtIndex:conut withObject:str];
+                                    }
+                                }
+                            }else{
+                                [self.dataArray replaceObjectAtIndex:conut withObject:str];
+                            }
+                        }
                     }
                 }else{
-                    str = [NSString stringWithFormat:@"%@%ld",str,(long)sender.tag];
-                    [self.dataArray replaceObjectAtIndex:conut withObject:str];
+                     str = [NSString stringWithFormat:@"%@%ld",str,(long)sender.tag];
+                    if ([str containsString:@"."]) {
+                        if ([str doubleValue] >= 999999999999.9999) {
+                            [[NSNotificationCenter defaultCenter]postNotificationName:@"douDong" object:nil userInfo:nil];
+                        }else{
+                            if ([[str componentsSeparatedByString:@"."] lastObject].length > 4) {
+                                [[NSNotificationCenter defaultCenter]postNotificationName:@"douDong" object:nil userInfo:nil];
+                            }else{
+                              [self.dataArray replaceObjectAtIndex:conut withObject:str];
+                            }
+                        }
+                    }else{
+                        if ([str doubleValue] >= 999999999999) {
+                             [[NSNotificationCenter defaultCenter]postNotificationName:@"douDong" object:nil userInfo:nil];
+                        }else{
+                          [self.dataArray replaceObjectAtIndex:conut withObject:str];
+                        }
+                    }
                 }
             }
         }else if (sender.tag >= 11 && sender.tag <= 14){
@@ -202,7 +234,7 @@
     return[scan scanInt:&val] && [scan isAtEnd];
 }
 -(void)change{
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"love" object:nil userInfo:@{@"question":[self.dataArray componentsJoinedByString:@""],@"answer":self.dataArray.count == 0 ? @"0.00" : [NSString stringWithFormat:@"%.2f",self.aaa]}];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"love" object:nil userInfo:@{@"question":[self.dataArray componentsJoinedByString:@""],@"answer":self.dataArray.count == 0 ? @"0.00" : [NSString stringWithFormat:@"%.4f",self.aaa]}];
 }
 -(NSMutableArray *)dataArray{
     if (!_dataArray) {
